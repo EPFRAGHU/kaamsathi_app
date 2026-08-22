@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% block title %}KaamSathi — Profile{% endblock %}
+
+{% block content %}
+
+<header class="app-header">
+  <div>
+    <div class="greet-label">Your profile</div>
+    <div class="greet-name">Profile</div>
+  </div>
+  <div class="bell"><i class="fa-regular fa-bell"></i><span class="dot"></span></div>
+</header>
+
+<div class="profile-card">
+  <div class="profile-top">
+    <div class="avatar">{{ initials }}</div>
+    <div>
+      <div class="profile-name">{{ worker_name }}</div>
+      <div class="profile-trade">{{ primary_trade }} · {{ years_experience }} yrs experience</div>
+      <div class="verify-badge"><i class="fa-solid fa-shield-check"></i> e-Shram verified</div>
+    </div>
+  </div>
+
+  <div class="profile-divider"></div>
+
+  <div class="profile-row">
+    <div class="k"><i class="fa-solid fa-phone"></i> Phone</div>
+    <div class="v">{{ phone }}</div>
+  </div>
+  <div class="profile-row">
+    <div class="k"><i class="fa-solid fa-location-dot"></i> Locality</div>
+    <div class="v">{{ locality }}</div>
+  </div>
+  <div class="profile-row">
+    <div class="k"><i class="fa-solid fa-star"></i> Rating</div>
+    <div class="v">{{ rating }} / 5.0</div>
+  </div>
+
+  <div class="profile-divider"></div>
+
+  <div class="field-label" style="margin-bottom:0;">Skills</div>
+  <div class="skill-pills">
+    {% for skill in skills %}
+    <span class="skill-pill">{{ skill }}</span>
+    {% endfor %}
+  </div>
+</div>
+
+{% endblock %}

@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+{% block title %}KaamSathi — Home{% endblock %}
+
+{% block role_link %}
+<a href="{{ url_for('post_job') }}" class="role-link">Employer? Post a job</a>
+{% endblock %}
+
+{% macro job_card(job) %}
+<div class="job-card">
+  <div class="job-icon" style="background:{{ job.color }};"><i class="fa-solid {{ job.icon }}"></i></div>
+  <div class="job-main">
+    <div class="job-top">
+      <div class="job-title">{{ job.title }}</div>
+      <div class="job-wage">₹{{ job.wage }}/day</div>
+    </div>
+    <div class="job-meta">
+      <span><i class="fa-solid fa-location-dot"></i> {{ job.location }} · {{ job.distance }} km</span>
+      <span><i class="fa-regular fa-clock"></i> {{ job.posted }}</span>
+    </div>
+    <div class="job-meta" style="margin-top:2px;">
+      <span><i class="fa-solid fa-user"></i> {{ job.employer_name }}</span>
+    </div>
+    <div class="job-tags">
+      <span class="tag {{ job.date_tag_class }}"><i class="fa-regular fa-calendar" style="margin-right:3px;"></i>{{ job.date_label }}</span>
+      {% for tag in job.tags %}
+        <span class="tag {{ tag.type }}">{{ tag.label }}</span>
+      {% endfor %}
+    </div>
+    <div class="job-contact">
+      <a href="tel:{{ job.employer_phone }}" class="contact-btn call"><i class="fa-solid fa-phone"></i> Call</a>
+      <a href="https://wa.me/{{ job.employer_phone_wa }}" target="_blank" class="contact-btn wa"><i class="fa-brands fa-whatsapp"></i> WhatsApp</a>
+    </div>
+    {% if worker %}
+      {% if job.already_interested %}
+        <div class="interest-badge"><i class="fa-solid fa-circle-check"></i> Interested — employer can contact you</div>
+      {% else %}
+        <form method="POST" action="{{ url_for('show_interest', job_id=job.id) }}">
+          <button type="submit" class="interest-btn">I'm interested</button>
+        </form>
+      {% endif %}
+    {% else %}
+      <a href="{{ url_for('register', role='worker') }}" class="interest-btn ghost">Register to apply</a>
+    {% endif %}
+  </div>
+</div>
+{% endmacro %}
+
+{% block content %}
+
+<header class="app-header">
+  <div>
+    <div class="greet-label">Good morning</div>
+    <div class="greet-name">{{ worker.name if worker else "Guest worker" }}</div>
+    <div class="locrow"><i class="fa-solid fa-location-dot"></i> Bhubaneswar <span class="oriya">ଭୁବନେଶ୍ୱର</span></div>
+  </div>
+  <div class="bell"><i class="fa-regular fa-bell"></i><span class="dot"></span></div>
+</header>
+
+{% if not worker %}
+<div class="flash-banner" style="background:#FFF4DB; border-color:#FCE4AE; color:var(--amber-dark);">
+  <i class="fa-solid fa-circle-info"></i>
+  <a href="{{ url_for('register', role='worker') }}" style="color:var(--amber-dark); font-weight:700;">Register</a>&nbsp;so employers can call or WhatsApp you.
+</div>
+{% endif %}
+
+<div class="avail-card" id="availCard">
+  <div class="avail-top">
+    <div>
+      <div class="avail-title">Available today</div>
+      <div class="avail-sub" id="availSub">Turn on to get matched with jobs nearby</div>
+    </div>
+    <div class="switch" id="availSwitch" onclick="toggleAvail()"><div class="knob"></div></div>
+  </div>
+  <div class="avail-meter">
+    <span class="num" id="meterNum">₹0</span>
+    <span class="unit">estimated today, based on {{ jobs|length }} nearby jobs</span>
+  </div>
+  <div class="avail-status" id="availStatus">OFF · not receiving job alerts</div>
+</div>
+
+<div class="section-label">
+  <h2>Tomorrow's work</h2>
+  <span>{{ tomorrow_label }}</span>
+</div>
+<div class="cal-strip">
+  {% for d in calendar_days %}
+  <div class="cal-chip {{ 'today' if d.is_today else '' }}{{ ' tomorrow' if d.is_tomorrow else '' }}">
+    <div class="wd">{{ d.weekday }}</div>
+    <div class="num">{{ d.num }}</div>
+    {% if d.has_jobs %}<div class="dot"></div>{% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+{% if tomorrow_jobs %}
+<div class="jobs" style="margin-bottom:22px;">
+  {% for job in tomorrow_jobs %}
+    {{ job_card(job) }}
+  {% endfor %}
+</div>
+{% else %}
+<div class="empty-tomorrow">
+  <i class="fa-regular fa-calendar-xmark"></i>
+  <div class="empty-title">No work scheduled for tomorrow yet</div>
+  <div class="empty-sub">New jobs get posted through the day — check back later.</div>
+</div>
+{% endif %}
+
+<div class="section-label">
+  <h2>What's your kaam?</h2>
+  <span>6 trades</span>
+</div>
+<div class="cat-grid">
+  {% for cat in categories %}
+  <div class="cat-tile c{{ loop.index }}">
+    <div class="icon"><i class="fa-solid {{ cat.icon }}"></i></div>
+    <div class="name">{{ cat.name }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="section-label">
+  <h2>Jobs near you</h2>
+  <span>within 5 km</span>
+</div>
+<div class="jobs">
+  {% for job in jobs %}
+    {{ job_card(job) }}
+  {% endfor %}
+</div>
+
+{% endblock %}

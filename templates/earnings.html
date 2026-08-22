@@ -1,0 +1,50 @@
+{% extends "base.html" %}
+{% block title %}KaamSathi — Earnings{% endblock %}
+
+{% block content %}
+
+<header class="app-header">
+  <div>
+    <div class="greet-label">Your earnings</div>
+    <div class="greet-name">{{ worker_name }}</div>
+    <div class="locrow"><i class="fa-solid fa-location-dot"></i> Bhubaneswar <span class="oriya">ଭୁବନେଶ୍ୱର</span></div>
+  </div>
+  <div class="bell"><i class="fa-regular fa-bell"></i><span class="dot"></span></div>
+</header>
+
+<div class="stat-grid">
+  <div class="stat-card highlight">
+    <div class="label">This week</div>
+    <div class="value">₹{{ "{:,}".format(week_total) }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">This month</div>
+    <div class="value">₹{{ "{:,}".format(month_total) }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Days worked</div>
+    <div class="value">{{ history|length }}</div>
+  </div>
+  <div class="stat-card">
+    <div class="label">Avg. daily wage</div>
+    <div class="value">₹{{ avg_wage }}</div>
+  </div>
+</div>
+
+<div class="section-label">
+  <h2>Recent jobs</h2>
+  <span>last {{ history|length }} entries</span>
+</div>
+<div class="earn-list">
+  {% for entry in history %}
+  <div class="earn-row">
+    <div>
+      <div class="job">{{ entry.job }}</div>
+      <div class="date">{{ entry.date }}</div>
+    </div>
+    <div class="amt">₹{{ entry.amount }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}

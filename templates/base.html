@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}KaamSathi{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&family=Inter:wght@400;500;600;700&family=Noto+Sans+Oriya:wght@500;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+<div class="device">
+  <div class="screen">
+
+    <div class="statusbar">
+      <span>9:41</span>
+      <div class="icons">
+        <i class="fa-solid fa-signal" style="font-size:11px;"></i>
+        <i class="fa-solid fa-wifi" style="font-size:11px;"></i>
+        <i class="fa-solid fa-battery-full" style="font-size:13px;"></i>
+      </div>
+    </div>
+
+    <div class="brand-strip">
+      <a href="{{ url_for('home') }}" class="mark">KaamSathi</a>
+      <span class="tag">daily work, daily wage</span>
+      {% block role_link %}{% endblock %}
+    </div>
+
+    <div class="account-bar">
+      {% if session.worker_id %}
+        <span><i class="fa-solid fa-user"></i> {{ session.worker_name }}</span>
+        <a href="{{ url_for('logout') }}">Log out</a>
+      {% elif session.employer_id %}
+        <span><i class="fa-solid fa-building"></i> {{ session.employer_name }} (employer)</span>
+        <a href="{{ url_for('my_jobs') }}">My jobs</a> · <a href="{{ url_for('logout') }}">Log out</a>
+      {% else %}
+        <span>Not registered</span>
+        <a href="{{ url_for('register') }}">Register</a>
+      {% endif %}
+    </div>
+
+    {% with messages = get_flashed_messages() %}
+      {% if messages %}
+        {% for m in messages %}
+          <div class="flash-banner"><i class="fa-solid fa-circle-check"></i> {{ m }}</div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    {% block content %}{% endblock %}
+
+    <div style="height:90px;"></div>
+
+    <nav class="bottom-nav">
+      <a href="{{ url_for('home') }}" class="nav-item {{ 'active' if active_nav=='home' else '' }}"><div class="fab-wrap"><i class="fa-solid fa-house"></i></div>Home</a>
+      <a href="{{ url_for('post_job') }}" class="nav-item {{ 'active' if active_nav=='post' else '' }}"><div class="fab-wrap"><i class="fa-solid fa-briefcase"></i></div>Post job</a>
+      <a href="{{ url_for('earnings') }}" class="nav-item {{ 'active' if active_nav=='earnings' else '' }}"><div class="fab-wrap"><i class="fa-solid fa-wallet"></i></div>Earnings</a>
+      <a href="{{ url_for('profile') }}" class="nav-item {{ 'active' if active_nav=='profile' else '' }}"><div class="fab-wrap"><i class="fa-solid fa-user"></i></div>Profile</a>
+    </nav>
+
+  </div>
+</div>
+
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+</body>
+</html>

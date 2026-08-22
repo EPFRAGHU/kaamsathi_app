@@ -1,0 +1,81 @@
+{% extends "base.html" %}
+{% block title %}KaamSathi — Post a job{% endblock %}
+
+{% block role_link %}
+<a href="{{ url_for('home') }}" class="role-link">Switch to worker view</a>
+{% endblock %}
+
+{% block content %}
+
+<header class="app-header">
+  <div>
+    <div class="greet-label">Employer</div>
+    <div class="greet-name">Post a job</div>
+    <div class="locrow"><i class="fa-solid fa-location-dot"></i> Bhubaneswar <span class="oriya">ଭୁବନେଶ୍ୱର</span></div>
+  </div>
+  <a href="{{ url_for('home') }}" class="back-btn"><i class="fa-solid fa-arrow-left"></i></a>
+</header>
+
+{% if not employer %}
+<div class="flash-banner" style="background:#FFF4DB; border-color:#FCE4AE; color:var(--amber-dark);">
+  <i class="fa-solid fa-circle-info"></i>
+  <a href="{{ url_for('register', role='employer') }}" style="color:var(--amber-dark); font-weight:700;">Register as an employer</a>&nbsp;to post this job.
+</div>
+{% endif %}
+
+<form class="form-wrap" method="POST" action="{{ url_for('post_job') }}" onsubmit="return validateJobForm()">
+
+  <div>
+    <label class="field-label">What kind of worker do you need?</label>
+    <div class="chip-grid" id="chipGrid">
+      {% for cat in categories %}
+      <label class="chip" data-value="{{ cat.name }}" onclick="selectChip(this)">
+        <input type="radio" name="category" value="{{ cat.name }}" {{ 'checked' if loop.first else '' }}>
+        <div class="icon"><i class="fa-solid {{ cat.icon }}"></i></div>
+        <div class="name">{{ cat.name }}</div>
+      </label>
+      {% endfor %}
+    </div>
+    <div class="field-hint" id="categoryError" style="display:none; color:var(--red-dark);">Choose a trade</div>
+  </div>
+
+  <div>
+    <label class="field-label">How many workers?</label>
+    <div class="stepper">
+      <button type="button" onclick="stepWorkers(-1)">−</button>
+      <span id="workerCount">1</span>
+      <button type="button" onclick="stepWorkers(1)">+</button>
+    </div>
+    <input type="hidden" name="workers" id="workersInput" value="1">
+  </div>
+
+  <div>
+    <label class="field-label">Daily wage per worker</label>
+    <div class="wage-input-wrap">
+      <span class="rupee">₹</span>
+      <input class="text-input" type="number" name="wage" id="wageInput" min="1" placeholder="700" required>
+    </div>
+    <div class="field-hint" id="wageError" style="display:none; color:var(--red-dark);">Enter a wage amount</div>
+  </div>
+
+  <div>
+    <label class="field-label">Location</label>
+    <input class="text-input" type="text" name="location" id="locationInput" placeholder="Chandrasekharpur, Bhubaneswar" required>
+    <div class="field-hint" id="locationError" style="display:none; color:var(--red-dark);">Enter a location</div>
+  </div>
+
+  <div>
+    <label class="field-label">When do you need them?</label>
+    <input class="select-input" type="date" name="date_needed" required>
+  </div>
+
+  <div>
+    <label class="field-label">Job details (optional)</label>
+    <textarea class="text-area" name="description" placeholder="Wall plastering for a 2BHK house, ground floor only"></textarea>
+  </div>
+
+  <button type="submit" class="submit-btn">Post job</button>
+
+</form>
+
+{% endblock %}

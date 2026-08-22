@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+{% block title %}KaamSathi — Register{% endblock %}
+
+{% block content %}
+
+<header class="app-header">
+  <div>
+    <div class="greet-label">Get started</div>
+    <div class="greet-name">Register</div>
+  </div>
+</header>
+
+<form class="form-wrap" method="POST" action="{{ url_for('register') }}">
+
+  <div>
+    <label class="field-label">I am a...</label>
+    <div class="chip-grid" id="roleGrid" style="grid-template-columns:repeat(2,1fr);">
+      <label class="chip {{ 'selected' if default_role=='worker' else '' }}" data-value="worker" onclick="selectRole(this,'worker')">
+        <input type="radio" name="role" value="worker" {{ 'checked' if default_role=='worker' else '' }}>
+        <div class="icon"><i class="fa-solid fa-helmet-safety"></i></div>
+        <div class="name">Worker looking for kaam</div>
+      </label>
+      <label class="chip {{ 'selected' if default_role=='employer' else '' }}" data-value="employer" onclick="selectRole(this,'employer')">
+        <input type="radio" name="role" value="employer" {{ 'checked' if default_role=='employer' else '' }}>
+        <div class="icon"><i class="fa-solid fa-building"></i></div>
+        <div class="name">Employer hiring workers</div>
+      </label>
+    </div>
+  </div>
+
+  <div>
+    <label class="field-label">Your name</label>
+    <input class="text-input" type="text" name="name" placeholder="Ramesh Sahoo" required>
+  </div>
+
+  <div>
+    <label class="field-label">Phone number</label>
+    <input class="text-input" type="tel" name="phone" placeholder="+91 90000 00000" required>
+    <div class="field-hint">Already registered with this number? You'll be logged back into your account.</div>
+  </div>
+
+  <div id="workerFields" style="display:{{ 'block' if default_role=='worker' else 'none' }};">
+    <label class="field-label">Your main trade</label>
+    <select class="select-input" name="trade">
+      {% for cat in categories %}
+      <option value="{{ cat.name }}">{{ cat.name }}</option>
+      {% endfor %}
+    </select>
+    <div style="height:12px;"></div>
+    <label class="field-label">Your locality</label>
+    <input class="text-input" type="text" name="locality" placeholder="Chandrasekharpur, Bhubaneswar">
+  </div>
+
+  <div id="employerFields" style="display:{{ 'block' if default_role=='employer' else 'none' }};">
+    <label class="field-label">Your locality / business area</label>
+    <input class="text-input" type="text" name="locality" placeholder="Patia, Bhubaneswar">
+  </div>
+
+  <button type="submit" class="submit-btn">Register</button>
+
+</form>
+
+{% endblock %}

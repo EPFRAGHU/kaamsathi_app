@@ -1,0 +1,71 @@
+{% extends "base.html" %}
+{% block title %}KaamSathi — My jobs{% endblock %}
+
+{% block role_link %}
+<a href="{{ url_for('post_job') }}" class="role-link">+ Post another job</a>
+{% endblock %}
+
+{% block content %}
+
+<header class="app-header">
+  <div>
+    <div class="greet-label">Employer</div>
+    <div class="greet-name">{{ employer.name }}</div>
+    <div class="locrow"><i class="fa-solid fa-location-dot"></i> {{ employer.locality or "Bhubaneswar" }}</div>
+  </div>
+</header>
+
+<div class="section-label">
+  <h2>Your posted jobs</h2>
+  <span>{{ jobs|length }} job{{ 's' if jobs|length != 1 else '' }}</span>
+</div>
+
+{% if not jobs %}
+<div class="empty-tomorrow">
+  <i class="fa-regular fa-folder-open"></i>
+  <div class="empty-title">You haven't posted a job yet</div>
+  <div class="empty-sub">Post one and workers nearby will be able to apply.</div>
+</div>
+{% endif %}
+
+<div class="jobs">
+  {% for job in jobs %}
+  <div class="job-card" style="flex-direction:column; align-items:stretch;">
+    <div style="display:flex; gap:12px; align-items:flex-start;">
+      <div class="job-icon" style="background:{{ job.color }};"><i class="fa-solid {{ job.icon }}"></i></div>
+      <div class="job-main">
+        <div class="job-top">
+          <div class="job-title">{{ job.title }}</div>
+          <div class="job-wage">₹{{ job.wage }}/day</div>
+        </div>
+        <div class="job-meta">
+          <span><i class="fa-solid fa-location-dot"></i> {{ job.location }}</span>
+          <span><i class="fa-regular fa-calendar"></i> {{ job.date_label }}</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="profile-divider"></div>
+
+    {% if job.interested %}
+      <div class="field-label" style="margin-bottom:8px;">{{ job.interested|length }} worker{{ 's' if job.interested|length != 1 else '' }} interested</div>
+      {% for person in job.interested %}
+      <div class="earn-row" style="margin-bottom:6px;">
+        <div>
+          <div class="job">{{ person.worker_name }}</div>
+          <div class="date">{{ person.worker_trade }}</div>
+        </div>
+        <div class="job-contact" style="margin-top:0;">
+          <a href="tel:{{ person.worker_phone }}" class="contact-btn call"><i class="fa-solid fa-phone"></i></a>
+          <a href="https://wa.me/{{ person.phone_wa }}" target="_blank" class="contact-btn wa"><i class="fa-brands fa-whatsapp"></i></a>
+        </div>
+      </div>
+      {% endfor %}
+    {% else %}
+      <div class="field-hint">No workers have shown interest yet. Check back soon.</div>
+    {% endif %}
+  </div>
+  {% endfor %}
+</div>
+
+{% endblock %}
